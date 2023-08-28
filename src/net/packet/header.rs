@@ -2,7 +2,7 @@ use std::convert::TryInto;
 
 use crate::net::codes::Codes;
 use crate::net::error::Result;
-use crate::net::traits::{Deserialize, Serialize, Validate};
+use crate::net::traits::Validate;
 
 const HASH: u8 = b'#';
 
@@ -126,58 +126,3 @@ impl HeaderBuilder {
         }
     }
 }
-
-/*
-impl Deserialize for Header {
-    type Output = Header;
-
-    fn deserialize(buf: &[u8]) -> Result<Self::Output> {
-        //Header is common
-        let code = buf[CODE];
-        let tag = buf[TAG];
-        let tpe = buf[TPE];
-
-        let stpe = if buf[STPE] as char == '#' {
-            Some(buf[STPE..STPE + 3].try_into()?)
-        } else {
-            None
-        };
-
-        let dir = if stpe.is_some() {
-            buf[DIR_EXT]
-        } else {
-            buf[DIR]
-        };
-
-        let header = Header {
-            code,
-            tag,
-            tpe,
-            stpe,
-            dir,
-        };
-
-        Ok(header)
-    }
-}
-
-impl Serialize for Header {
-    fn serialize(&self, buf: &mut impl std::io::Write) -> Result<usize> {
-        let mut out: Vec<u8> = Vec::with_capacity(std::mem::size_of::<Self>()); //TODO how to handle extra size from Option
-
-        out.push(self.code);
-        out.push(self.tag);
-        out.push(self.tpe);
-
-        if self.stpe.is_some() {
-            out.extend(self.stpe.unwrap().iter());
-        }
-
-        out.push(self.dir);
-
-        buf.write_all(&out)?;
-
-        Ok(out.len())
-    }
-}
-*/

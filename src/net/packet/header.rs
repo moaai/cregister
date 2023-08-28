@@ -28,6 +28,13 @@ impl Header {
         Default::default()
     }
 
+    pub(crate) fn get_size(&self) -> usize {
+        match self.stpe {
+            Some(_) => 7,
+            None => 4
+        }
+    }
+
     pub(crate) fn from_bytes(buf: &[u8]) -> Result<Self> {
         //Header is common
         let code = buf[CODE];

@@ -2,7 +2,7 @@ use std::io::Write;
 
 use crate::net::codes::Codes;
 use crate::net::error::{ProtocolError, Result};
-use crate::net::packet::{PacketType, Product, RawProductFile, StartPacket};
+use crate::net::packet::{Header, PacketType, Product, RawProductFile};
 use crate::net::traits::{Packet, Validate};
 use crate::tools::ll_dump;
 
@@ -39,7 +39,7 @@ impl DeviceTango {
     }
 
     pub fn handle_receive(&mut self) -> Result<()> {
-        let mut data = [0_u8; 256];
+        let mut data = [0_u8; 512];
 
         if let Ok(size) = self.proto.read(&mut data) {
             if size == 0 {
@@ -58,25 +58,31 @@ impl DeviceTango {
 
             //Detect start packet and redirect to correct place
 
-            trace!("--- SP ---");
-            let sp = self.proto.read_packet::<StartPacket>();
+            self.proto.read(&mut data)?;
 
-            if let Err(sp) = sp {
-                if PKT!(self.proto, Codes::Rvi).is_err() {
-                    return Err(ProtocolError::CommunicationError(
-                        "Failed to respond".to_owned(),
-                    ));
-                }
-                return Err(sp);
-            }
+            let header = Header::from_bytes(&data)?;
+
+            trace!("--- HEADER ---");
+            // let sp = self.proto.read_packet::<StartPacket>();
+
+            //
+            // if let Err(sp) = sp {
+            //     if PKT!(self.proto, Codes::Rvi).is_err() {
+            //         return Err(ProtocolError::CommunicationError(
+            //             "Failed to respond".to_owned(),
+            //         ));
+            //     }
+            //     return Err(sp);
+            // }
 
             //Give client what it wants
             //TODO do packet may be none?
-            let sp = sp.unwrap().packet.unwrap();
+            // let sp = sp.unwrap().packet.unwrap();
 
             // let dir = sp.dir as char;
+            let dir = header.dir as char;
 
-            let dir = '1'; // Refactor
+            // let dir = '1'; // Refactor
 
             //DUMP!(sp);
 
@@ -111,7 +117,9 @@ impl DeviceTango {
                     PKT!(self.proto, Codes::Ack).unwrap();
                 }
             } else if dir == '0' {
-                // info!("Client want something from us");
+                info!("Client want something from us");
+
+                PKT!(self.proto, Codes::Ack).unwrap();
 
                 PKTCS!(self.proto, self.proto.read_u8()?, Codes::Eot, Codes::Enq);
                 trace!("READ [{:?}] WRITE [{:?}]", Codes::Eot, Codes::Enq);
@@ -125,8 +133,8 @@ impl DeviceTango {
                 if self.proto.read_u8()? == Codes::Ack as u8 {
                     trace!("--- Send Data ---");
 
-                    /* Refctor
-                    match (sp.tpe as char).into() {
+                    /* Refctor */
+                    match (header.tpe as char).into() {
                         PacketType::ProductExt => {
                             info!("Client requested: {:?}", PacketType::ProductExt);
                             self.send_products()?;
@@ -134,10 +142,8 @@ impl DeviceTango {
                         PacketType::Status => {
                             todo!()
                         }
-                        _ => {} // TODO - other paackets should be implemented also
-                                //PacketType::DateReport => {}
+                        _ => todo!()
                     }
-                    */
 
                     // Send Data
                     //self.respond_with_code(Codes::NAK).unwrap();

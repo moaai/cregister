@@ -157,7 +157,7 @@ impl Tango {
                     )));
                 }
 
-                println!("{:?} {:?}", &buf[0], &buf[size - 5]);
+                // println!("{:?} {:?}", &buf[0], &buf[size - 5]);
                 // Here we should validate a frame not packet
                 // STX ... ETX
                 // CRC

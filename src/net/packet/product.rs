@@ -23,7 +23,7 @@ use log::{debug, trace};
 
 use serde::ser::{Serialize, SerializeStruct};
 
-use super::{PacketType, PacketTag};
+use super::{PacketTag, PacketType};
 
 use crate::i18n;
 
@@ -49,7 +49,7 @@ pub struct Product {
     halo: u8,
     tandem: String,
     unit: u8,
-    quantity: u16,
+    quantity: i16,
     key_code: u16,
     // Prorduct footer ... should be added during serialization
 }
@@ -150,7 +150,7 @@ impl Packet for Product {
         let ean: [u8; 18] = buf[7..7 + 18].try_into()?; //TODO add ?
         let ean = Product::get_numeric::<u32>(&ean);
 
-        let position: [u8; 5] = buf[25..25 + 5].try_into().unwrap();
+        let position: [u8; 5] = buf[25..25 + 5].try_into()?;
         let position = Product::get_numeric::<u32>(&position);
 
         let name: [u8; 40] = buf[30..30 + 40].try_into().unwrap();
@@ -158,7 +158,7 @@ impl Packet for Product {
 
         // name: &'a[u8],
         let price: [u8; 10] = buf[70..70 + 10].try_into().unwrap();
-        let price = Product::get_numeric::<f32>(&price);
+        let price: f32 = Product::get_numeric::<f32>(&price) / 100.0;
 
         let ptu = buf[80] as char;
         let precission = buf[81];
@@ -179,7 +179,12 @@ impl Packet for Product {
         let unit = Product::get_numeric::<u8>(&unit);
 
         let quantity: [u8; 20] = buf[110..110 + 20].try_into().unwrap();
-        let quantity = Product::get_numeric::<u16>(&quantity);
+        let quantity = String::from(std::str::from_utf8(&quantity).unwrap()).replace(' ', "");
+        let quantity = quantity.parse::<i16>().unwrap();
+
+        // let quantity: [u8; 20] = buf[110..110 + 20].try_into().unwrap();
+        // let quantity = Product::get_numeric::<u16>(&quantity);
+        // println!("{:?}", quantity);
 
         let key_code: [u8; 3] = buf[130..130 + 3].try_into().unwrap(); // FIXME - 0 * 100 + 1 * 10 + 2
         let key_code = Product::get_numeric::<u16>(&key_code);
@@ -205,7 +210,6 @@ impl Packet for Product {
     fn get_type() -> PacketType {
         PacketType::ProductExt
     }
-
 
     fn get_tag(&self) -> PacketTag {
         PacketTag::D
@@ -375,7 +379,7 @@ impl Product {
         let ean = row.ean.parse::<u32>().unwrap_or_default();
         let price = row.price.parse::<f32>().unwrap_or_default();
         let ptu = row.ptu.chars().next().unwrap_or_default();
-        let quantity = row.quantity.parse::<u16>().unwrap_or_default();
+        let quantity = row.quantity.parse::<i16>().unwrap_or_default();
 
         Product {
             ean,

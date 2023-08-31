@@ -76,7 +76,7 @@ impl Packet for Product {
 
         buf.write_all(&name)?;
 
-        let price: [u8; 10] = format!("{:>10}", self.price).as_bytes()[0..10]
+        let price: [u8; 10] = format!("{:>10}", self.price * 100.0).as_bytes()[0..10]
             .try_into()
             .unwrap();
 

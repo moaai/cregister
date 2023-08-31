@@ -10,7 +10,15 @@ use crate::net::packet::{Direction, Header, HeaderBuilder, PacketType, StartPack
 use crate::net::traits::{Packet, PacketDyn}; //TODO move validate to packet
 use crate::tools::{calc_crc, ll_dump};
 
-use log::trace;
+use log::{trace, log_enabled};
+
+macro_rules! DUMP_PACKET {
+    ($data:expr) => {{
+        if log_enabled!(log::Level::Trace) {
+            ll_dump($data, || {});
+        }
+    }};
+}
 
 macro_rules! PKTSCC {
     ($self:ident, $sc:expr, $rc:expr, $closure: tt) => {{
@@ -92,7 +100,7 @@ impl Tango {
             //TODO: handle single packets separately and then check for STX
             //TODO: maybe it should be handled in HEADER
 
-            ll_dump(&buf[..size], || {});
+            DUMP_PACKET!(&buf[..size]);
 
             // let frame = Frame::<T>::from_bytes(&buf)?;
 
@@ -390,7 +398,7 @@ impl Tango {
         calc_crc(&out[1..out.len()], &mut crc);
         out.extend(crc.iter());
 
-        ll_dump(&out, || {});
+        DUMP_PACKET!(&out);
 
         // packet.serialize(&mut self.output)?;
 
@@ -422,8 +430,6 @@ impl Tango {
             .dir(dir.into())
             .build();
 
-        println!("Header = {:?}", header);
-
         let mut out: Vec<u8> = Vec::new();
         // packet.serialize(&mut out)?;
 
@@ -437,7 +443,7 @@ impl Tango {
         calc_crc(&out[1..out.len()], &mut crc);
         out.extend(crc.iter());
 
-        ll_dump(&out, || {});
+        DUMP_PACKET!(&out);
 
         // packet.serialize(&mut self.output)?;
 

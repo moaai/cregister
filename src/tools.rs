@@ -81,8 +81,6 @@ where
         return;
     }
 
-    //println!();
-
     op();
     //TODO Detect extendect packets, starting with '#'
     let st = String::from_iter(

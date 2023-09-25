@@ -91,6 +91,8 @@ impl DeviceTango {
                 let mut data = [0_u8; 138]; //TODO: Read up to size of Product
                 info!("Client have some data for us");
 
+                PKT!(self.proto, Codes::Ack)?;
+
                 let mut file = std::fs::File::create("output.bin").unwrap();
 
                 //TODO redirect packet to correct reader
@@ -142,7 +144,7 @@ impl DeviceTango {
                         PacketType::Status => {
                             todo!()
                         }
-                        _ => todo!()
+                        _ => todo!(),
                     }
 
                     // Send Data

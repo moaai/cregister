@@ -49,6 +49,8 @@ pub enum ListSubCommand {
         start: Option<String>,
         #[arg(short, long, help = "End date")]
         end: Option<String>,
+        #[arg(short, long, help = "Send products from file", default_value = "products.csv")]
+        file: PathBuf,
     },
     #[command(about = "Get model version")]
     Model,

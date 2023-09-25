@@ -1,7 +1,7 @@
 [package]
 name = "cregister"
 version = "0.1.0"
-authors = ["Jakub Gradcki <jakub.gradcki@gmail.com>"]
+authors = ["Jakub Gradcki <j.gradcki@moaai.com>"]
 edition = "2021"
 # default-run = "cregister"
 
@@ -14,14 +14,9 @@ edition = "2021"
 [dependencies]
 encoding = "0.2" # or encoding_rs
 serde={version="1.0.188", features=["derive"]}
-# bincode="1.2.1"
 log = {version="0.4.14", feataures = ["max_level_debug"]}
 env_logger="0.10.0"
 ctrlc = { version = "3.0", features = ["termination"] }
-# num_enum="0.5.4"
-# structopt="0.3.23"
-# reqwest = { version = "0.11", features = ["json"] }
-# tokio = { version = "1", features = ["full"] }
 chrono = "0.4.28"
 csv = "1.2.2"
 hyphenation="0.8.4"

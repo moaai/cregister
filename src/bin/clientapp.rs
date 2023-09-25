@@ -5,21 +5,7 @@ use std::str::FromStr;
 use clap::Parser;
 
 use cregister::client;
-
 use cregister::cli::{Cli, Commands, ListSubCommand, Options};
-
-//List products
-//Save products
-//Get particualr product???
-
-//TODO connection params
-
-//That fun is a fun ... if addr is en ERR function returns immediately
-// fn fun(addr: std::io::Result<()>) -> std::io::Result<()> {
-//     let v = addr?;
-//     println!("NEVER REACH HERE");
-//     Ok(())
-// }
 
 fn main() {
     env_logger::init();
@@ -41,14 +27,13 @@ fn main() {
 
     match options.command {
         Commands::Get(sc) => match sc {
-            ListSubCommand::Products { start, end } => {
-                let mut csv_writer = csv::WriterBuilder::new().from_path("products.csv").unwrap();
+            ListSubCommand::Products { start, end, file } => {
+                println!("{:?}", file);
+                let mut csv_writer = csv::WriterBuilder::new().from_path(file).unwrap();
                 client
                     .get_products(start.as_deref(), end.as_deref(), |product| {
                         println!("Got product {}", product);
                         csv_writer.serialize(product).unwrap();
-                        //DUMP!(product)
-                        // ll_dump(pro, op)
                     })
                     .unwrap();
             }

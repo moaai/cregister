@@ -1,4 +1,4 @@
-//! This crate is Rust implementation of the Novitus cash register protocol for Novitus Next cash
+//! This crate is Rust implementation of the Tango cash register protocol for Novitus Next cash
 //! register.
 //!
 //! It should also handle other devices that implements protocol described here:

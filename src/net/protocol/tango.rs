@@ -102,15 +102,7 @@ impl Tango {
 
             DUMP_PACKET!(&buf[..size]);
 
-            // let frame = Frame::<T>::from_bytes(&buf)?;
-
             let header = Header::from_bytes(&buf)?;
-
-            // if frame.header.is_none() {
-            //     return Err(ProtocolError::CommunicationError(
-            //         "Incorrect packet header".to_owned(),
-            //     ));
-            // }
 
             // let header = frame.header.unwrap();
             let rsp: Codes = header.code.try_into()?;
@@ -507,5 +499,3 @@ impl Tango {
 
 pub(crate) use PKT;
 pub(crate) use PKTCS;
-
-use super::frame::Frame;

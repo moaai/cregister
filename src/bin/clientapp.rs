@@ -28,7 +28,7 @@ fn main() {
     let options = Options::from_argc(cli);
 
     let mut client = client::Client::connect(
-        SocketAddr::from_str(format!("{}:{}", options.server, options.port).as_str())
+        SocketAddr::from_str(format!("{}:{}", options.device, options.port).as_str())
             .unwrap_or_else(|e| {
                 eprintln!("{:?}", e);
                 process::exit(1)

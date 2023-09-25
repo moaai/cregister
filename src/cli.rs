@@ -7,8 +7,8 @@ use std::path::PathBuf;
 #[clap(author, version, about, long_about = None)]
 #[clap(propagate_version = true)]
 pub struct Cli {
-    #[arg(short = 's', long)]
-    server: Ipv4Addr,
+    #[arg(short = 'd', long)]
+    device: Ipv4Addr,
     #[arg(short = 'p', long, default_value = "5001")]
     port: u16,
     #[clap(subcommand)]
@@ -55,14 +55,14 @@ pub enum ListSubCommand {
 }
 
 pub struct Options {
-    pub server: Ipv4Addr,
+    pub device: Ipv4Addr,
     pub port: u16,
     pub command: Commands,
 }
 
 impl Options {
     pub fn from_argc(cli: Cli) -> Self {
-        let server = cli.server;
+        let device = cli.device;
         let port = cli.port;
 
         /*
@@ -70,7 +70,7 @@ impl Options {
             */
 
         Options {
-            server,
+            device,
             port,
             command: cli.command,
         }

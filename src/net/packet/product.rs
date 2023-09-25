@@ -299,6 +299,7 @@ fn hyphenate(name: &str) -> String {
     let mut v: Vec<String> = name
         .replace('-', " ")
         .split(' ')
+        .filter(|item| !item.is_empty())
         .map(|x| x.to_owned())
         .collect();
     let mut v_len: i8 = (v.len() - 1) as i8;

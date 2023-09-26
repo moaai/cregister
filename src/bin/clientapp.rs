@@ -4,8 +4,10 @@ use std::str::FromStr;
 
 use clap::Parser;
 
-use cregister::client;
 use cregister::cli::{Cli, Commands, ListSubCommand, Options};
+use cregister::client;
+use indicatif::{ProgressBar, ProgressStyle, ProgressFinish};
+use log::trace;
 
 fn main() {
     env_logger::init();
@@ -25,17 +27,31 @@ fn main() {
         process::exit(1);
     });
 
+    let pb = ProgressBar::new_spinner().with_finish(ProgressFinish::AndLeave);
+    pb.set_style(
+        ProgressStyle::with_template("{spinner} [{elapsed_precise}] Downloading products {len:7} {msg}")
+            .unwrap(),
+    );
+
     match options.command {
         Commands::Get(sc) => match sc {
             ListSubCommand::Products { start, end, file } => {
-                println!("{:?}", file);
-                let mut csv_writer = csv::WriterBuilder::new().from_path(file).unwrap();
+                let mut csv_writer = csv::WriterBuilder::new()
+                    .from_path(file)
+                    .expect("Unable to create csv writer");
                 client
                     .get_products(start.as_deref(), end.as_deref(), |product| {
-                        println!("Got product {}", product);
-                        csv_writer.serialize(product).unwrap();
+                        // println!("Got product {}", product);
+                        trace!("{}", product);
+                        tick(&pb);
+                        // std::thread::sleep(std::time::Duration::from_millis(500));
+                        csv_writer
+                            .serialize(product)
+                            .expect("Failed to save csv file");
                     })
-                    .unwrap();
+                    .expect("Failed to download products");
+
+                // println!("Completed. {} Products downloaded", prd_cnt);
             }
             ListSubCommand::Model => {
                 println!("Model");
@@ -44,6 +60,12 @@ fn main() {
         Commands::Send { file } => {
             client.upload_products_from_file(file).unwrap();
         }
+    }
+}
+
+fn tick(pb: &ProgressBar) {
+    if std::env::var("RUST_LOG").is_err() {
+        pb.inc(1);
     }
 }
 

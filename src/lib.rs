@@ -4,20 +4,17 @@
 //! It should also handle other devices that implements protocol described here:
 //! https://novitus.pl/file/get/771 .
 //!
+//! ```
+//! use std::net::{SocketAddr, IpAddr, Ipv4Addr};
 //!
+//! let client = client::Connect(SocketAddr::new(IpAddr::V4(Ipv4Addr::new(127, 0, 0, 1)), 5001)).unwrap();  
+//! ```
+//!
+//!
+pub mod cli;
 pub mod client;
 pub mod device;
+
 pub(crate) mod i18n;
-pub mod net;
-pub mod tools;
-pub mod cli;
-
-// use net::Protocol;
-
-mod private {
-    pub trait Sealed {}
-
-    // impl Sealed for crate::net::packet::StartPacket {}
-    // impl Sealed for crate::net::packet::Header {}
-    // impl Sealed for crate::net::packet::Product {}
-}
+pub(crate) mod net;
+pub(crate) mod tools;

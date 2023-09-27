@@ -5,8 +5,9 @@ use std::str::FromStr;
 use clap::Parser;
 
 use cregister::cli::{Cli, Commands, ListSubCommand, Options};
+
 use cregister::client;
-use indicatif::{ProgressBar, ProgressStyle, ProgressFinish};
+use indicatif::{ProgressBar, ProgressFinish, ProgressStyle};
 use log::trace;
 
 fn main() {
@@ -27,21 +28,22 @@ fn main() {
         process::exit(1);
     });
 
-    let pb = ProgressBar::new_spinner().with_finish(ProgressFinish::AndLeave);
-    pb.set_style(
-        ProgressStyle::with_template("{spinner} [{elapsed_precise}] Downloading products {len:7} {msg}")
-            .unwrap(),
-    );
-
     match options.command {
         Commands::Get(sc) => match sc {
             ListSubCommand::Products { start, end, file } => {
                 let mut csv_writer = csv::WriterBuilder::new()
                     .from_path(file)
                     .expect("Unable to create csv writer");
+
+                let pb = ProgressBar::new_spinner().with_finish(ProgressFinish::AndLeave);
+                pb.set_style(
+                    ProgressStyle::with_template(
+                        "{spinner} [{elapsed_precise}] Downloading products {len:7} {msg}",
+                    )
+                    .unwrap(),
+                );
                 client
                     .get_products(start.as_deref(), end.as_deref(), |product| {
-                        // println!("Got product {}", product);
                         trace!("{}", product);
                         tick(&pb);
                         // std::thread::sleep(std::time::Duration::from_millis(500));

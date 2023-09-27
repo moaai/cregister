@@ -16,7 +16,7 @@ pub fn calc_crc(data: &[u8], out: &mut [u8; 4]) {
     out.clone_from_slice(&hex_crc);
 }
 
-/// # Safety 
+/// # Safety
 /// Single allocation object, not null data with constant width
 #[allow(dead_code)]
 pub unsafe fn struct_to_u8<T>(p: &T) -> &[u8] {
@@ -107,6 +107,19 @@ where
     }
     eprintln!();
     for (i, chunk) in buf[..buf.len()].chunks(COLUMNS).enumerate() {
-        eprintln!("\t{:0>2} {:0>3?}", i, chunk);
+        let v: Vec<u8> = chunk
+            .iter()
+            .map(|v| if *v < 32 { b'.' } else { *v })
+            .collect();
+        let str: String = String::from_utf8_lossy(&v).to_string();
+        let chunk_len = chunk.len();
+        eprintln!(
+            "\t{:0>2} {:0>3?} {:>width$}|{}|",
+            i,
+            chunk,
+            "",
+            str,
+            width = 5 * (COLUMNS - chunk_len)
+        );
     }
 }

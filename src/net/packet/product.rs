@@ -294,7 +294,7 @@ impl Display for Product {
 //fn hyphenate<'a>(name: &'a str) -> String {
 fn hyphenate(name: &str) -> String {
     let path_to_dict = "./dict/pl.standard.bincode";
-    let en_us = Standard::from_path(Language::Polish, path_to_dict).unwrap();
+    let pl_pl = Standard::from_path(Language::Polish, path_to_dict).unwrap();
 
     let mut v: Vec<String> = name
         .replace('-', " ")
@@ -314,7 +314,7 @@ fn hyphenate(name: &str) -> String {
         }
         */
 
-        let hyphenated = en_us.hyphenate(&v[v_len as usize]);
+        let hyphenated = pl_pl.hyphenate(&v[v_len as usize]);
         let mut it = hyphenated.iter();
         it.mark_with("");
         let chop: Vec<String> = it.collect();

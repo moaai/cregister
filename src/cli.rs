@@ -19,17 +19,6 @@ pub struct Cli {
 pub enum Commands {
     #[command(about = "List cash register items")]
     // FIXME: Should we support multiple commands, like list products and then take device
-    // version???
-    /*
-        Rist {
-            /*
-            #[arg(short, long, help = "Show products")]
-            products: bool,
-            #[arg(short, long, help = "Get cash register version")]
-            model: bool,
-            */
-        },
-    */
     #[command(about = "Send command to the device")]
     Send {
         #[arg(short, long, help = "Send file content")]
@@ -42,8 +31,6 @@ pub enum Commands {
 #[derive(Debug, Subcommand)]
 pub enum ListSubCommand {
     #[command(about = "List cash register products")]
-    //#[clap(subcommand)]
-    //Products,
     Products {
         #[arg(short, long, help = "Start date")]
         start: Option<String>,
@@ -66,10 +53,6 @@ impl Options {
     pub fn from_argc(cli: Cli) -> Self {
         let device = cli.device;
         let port = cli.port;
-
-        /*
-        }
-            */
 
         Options {
             device,

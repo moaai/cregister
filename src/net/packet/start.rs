@@ -1,8 +1,8 @@
+//#![allow(unused)]
 //! Start packet
 //! This is a start packet documentation which is not present in render
 
 use std::fmt::Debug;
-use std::ops::Range;
 
 use crate::net::error::{ProtocolError, Result};
 use crate::net::packet::PacketType;
@@ -10,35 +10,22 @@ use crate::net::packet::PacketType;
 use crate::net::traits::{Packet, Validate};
 
 use super::PacketTag;
-// use crate::tools::{calc_crc, ll_dump};
 
-const HASH: u8 = b'#';
-// const EMPTY_STPE: [u8; 3] = ['0' as u8, '0' as u8, '0' as u8];
+// const HASH: u8 = b'#';
 
-const SP_CODE: usize = 0;
-const SP_MARKER: usize = 1; //'S'
-const SP_TPE: usize = 2;
-const SP_STPE: usize = 3;
-const SP_STPE_EXT: Range<usize> = 3..6;
-const SP_DIR: usize = 3;
-const SP_DIR_EXT: usize = 6;
-const SP_BEG: Range<usize> = 4..4 + 18;
-const SP_END: Range<usize> = 22..22 + 18;
-const SP_BEG_EXT: Range<usize> = 7..7 + 18;
-const SP_END_EXT: Range<usize> = 25..25 + 18;
-const SP_ECODE: usize = 40;
-const SP_ECODE_EXT: usize = 43;
-
-// struct VValidator<'a> {
-//     buf: &'a [u8],
-// }
-
-// impl<'a> VValidator<'a> {
-//     fn new(buf: &'a [u8]) -> Self {
-//         VValidator { buf }
-//     }
-//     fn validate_crc(&self, rng: Range<usize>) {}
-// }
+// const SP_CODE: usize = 0;
+const SP_TAG: usize = 1; //'S'
+// const SP_TPE: usize = 2;
+// const SP_STPE: usize = 3;
+// const SP_STPE_EXT: Range<usize> = 3..6;
+// const SP_DIR: usize = 3;
+// const SP_DIR_EXT: usize = 6;
+// const SP_BEG: Range<usize> = 4..4 + 18;
+// const SP_END: Range<usize> = 22..22 + 18;
+// const SP_BEG_EXT: Range<usize> = 7..7 + 18;
+// const SP_END_EXT: Range<usize> = 25..25 + 18;
+// const SP_ECODE: usize = 40;
+// const SP_ECODE_EXT: usize = 43;
 
 macro_rules! PAD {
     ($l:expr, $el: expr) => {
@@ -135,8 +122,9 @@ impl Packet for StartPacket {
         //Only for extended packet size
         //assert!(size > 47);
 
-        //TODO Move to some comon header parser
-        let marker = buf[SP_MARKER];
+        //TODO Move to some comon header parser and add validation
+        // mostly used by server
+        let marker = buf[SP_TAG];
 
         //TODO Common validator
         if marker as char != 'S' {

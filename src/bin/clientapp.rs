@@ -46,7 +46,7 @@ fn main() {
                     .get_products(start.as_deref(), end.as_deref(), |product| {
                         trace!("{}", product);
                         tick(&pb);
-                        // std::thread::sleep(std::time::Duration::from_millis(500));
+                        // std::thread::sleep(std::time::Duration::from_millis(200));
                         csv_writer
                             .serialize(product)
                             .expect("Failed to save csv file");

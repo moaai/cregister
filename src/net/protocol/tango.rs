@@ -10,7 +10,7 @@ use crate::net::packet::{Direction, Header, HeaderBuilder, PacketType, StartPack
 use crate::net::traits::{Packet, PacketDyn}; //TODO move validate to packet
 use crate::tools::{calc_crc, ll_dump};
 
-use log::{trace, log_enabled};
+use log::{log_enabled, trace};
 
 macro_rules! DUMP_PACKET {
     ($data:expr) => {{
@@ -31,7 +31,6 @@ macro_rules! PKTSCC {
         } else {
             $closure()?
         }
-        // return Ok(());
     }};
 }
 
@@ -85,12 +84,6 @@ impl Tango {
         trace!("read_packet [{:?}]", T::get_type());
         //TODO: Search in spec for correct maximum buffer size, or specify it in the Packet trait
         // so and force implmentation.
-
-        //
-        // TODO: create another method read_frame and put there all low level stuff
-        //
-        // Maybe I should have OutFrame and InFrame
-        //
 
         let mut buf = [0u8; 512];
         //TODO:
@@ -183,8 +176,6 @@ impl Tango {
                 PKT!(self, Codes::Ack)?;
                 trace!("--- ACK ---");
 
-                // T::deserialize(&buf[..size])
-
                 Ok(rs)
             } else {
                 Err(ProtocolError::CommunicationError(format!(
@@ -210,8 +201,6 @@ impl Tango {
             Codes::Enq,
             Codes::Ack,
             (|| -> Result<()> {
-                // self.write_frame(&FrameBuilder::new().packet(&packet).build())?;
-
                 self.write_start_packet(pt, begin, end, Direction::Upload)?;
 
                 let rsp = self.read_u8()?;
@@ -261,7 +250,7 @@ impl Tango {
 
                 if rsp != Codes::Ack as u8 {
                     return Err(ProtocolError::CommunicationError(format!(
-                        "Intorrect {:?} packet",
+                        "Incorrect {:?} packet",
                         rsp
                     )));
                 }
@@ -392,8 +381,6 @@ impl Tango {
 
         DUMP_PACKET!(&out);
 
-        // packet.serialize(&mut self.output)?;
-
         self.output.write_all(&out)?;
         self.output.flush()?;
 
@@ -401,19 +388,7 @@ impl Tango {
     }
 
     fn write_packet(&mut self, packet: &impl PacketDyn, dir: Direction) -> Result<()> {
-        // TODO - add packet type here to prepare header
-        //
-        // Build header and crc here. Packets will only handle its internals
-        // To do it I need to change function signature. It should have generic type from which I
-        // should infer type for header
-
-        // 1. Write header
-        // 2. Write packet
-        // 3. Write footer (EXT + CRC)
-        //
         trace!("write_packet");
-
-        // let header = HeaderBuilder::new().tpe().build();
 
         let header = HeaderBuilder::new()
             .tag(packet.get_tag().into())
@@ -423,7 +398,6 @@ impl Tango {
             .build();
 
         let mut out: Vec<u8> = Vec::new();
-        // packet.serialize(&mut out)?;
 
         header.to_bytes(&mut out)?;
 
@@ -437,21 +411,10 @@ impl Tango {
 
         DUMP_PACKET!(&out);
 
-        // packet.serialize(&mut self.output)?;
-
         self.output.write_all(&out)?;
         self.output.flush()?;
         Ok(())
     }
-
-    // fn write_frame(&mut self, frame: &Frame) -> Result<()> {
-    //         trace!("write_frame");
-    //         ll_dump(&frame.data, || {});
-    //         self.output.write_all(&frame.data)?;
-    //         self.output.flush()?;
-    //
-    //         Ok(())
-    // }
 
     //TODO: maybe return something else
     pub(crate) fn read_u8(&mut self) -> Result<u8> {
@@ -478,17 +441,6 @@ impl Tango {
         // self.input.read(buf);
         Ok(self.refinput.borrow_mut().read(buf)?)
     }
-
-    //TODO: add return
-    // pub fn write_u8(&mut self, b: u8) -> std::io::Result<usize> {
-    //     let size = self.output.write(&[b]);
-
-    //     self.output.flush()?;
-
-    //     //TODO check for response
-
-    //     size
-    // }
 
     pub(crate) fn write_code(&mut self, code: Codes) -> std::io::Result<()> {
         // trace!("Respond with code: {:?}", code);

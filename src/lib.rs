@@ -1,5 +1,5 @@
-//! This crate is Rust implementation of the Tango cash register protocol for Novitus Next cash
-//! register.
+//! This crate is a Rust implementation of the Tango cash register protocol for Novitus Next cash
+//! register device.
 //!
 //! It should also handle other devices that implements protocol described here:
 //! https://novitus.pl/file/get/771 .

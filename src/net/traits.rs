@@ -51,13 +51,3 @@ pub trait Validate {
         Ok(())
     }
 }
-
-pub trait Deserialize: Validate {
-    type Output;
-    fn deserialize(buf: &[u8]) -> Result<Self::Output>;
-}
-
-// FIXME - Serialize from higlevel representation to bytes
-pub trait Serialize {
-    fn serialize(&self, buf: &mut impl Write) -> Result<usize>;
-}

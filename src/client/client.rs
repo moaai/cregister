@@ -11,11 +11,6 @@ pub struct Client {
     proto: Tango,
 }
 
-//TODO: Create some config struct for packet params
-// begin: Option<&str>,
-// end: Option<&str>,
-// PacketType::ProductExt
-
 impl Client {
     pub fn connect(addr: SocketAddr) -> Result<Self> {
         let stream = TcpStream::connect(addr)?;
@@ -35,7 +30,6 @@ impl Client {
         Ok(())
     }
 
-    //TODO
     pub fn send_product(
         &self,
         _ean: &str,

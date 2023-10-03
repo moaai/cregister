@@ -383,7 +383,7 @@ impl Iterator for ProductFile {
     type Item = Result<Product>; //TODO: io result, or my result
 
     fn next(&mut self) -> Option<Self::Item> {
-        let mut p = 0u8; RECORD_SIZE];
+        let mut p = [0u8; RECORD_SIZE];
 
         match self.reader.read_exact(&mut p) {
             Ok(_) => {}

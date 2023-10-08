@@ -229,13 +229,12 @@ impl Display for Product {
     }
 }
 
-/// Reduces product name size to 40 characters.
+/// Reduces the size of the product to 40 characters.
 ///
 /// First iteration tries to hyphenate last words using polish dictionary
 /// and leave only first hyphen.
-/// Second iteration executed if name is still > 40, leave only first letter of
+/// Second iteration is executed if name is still > 40, leaves only first letter of
 /// the product name.
-///
 fn hyphenate(name: &str) -> String {
     let path_to_dict = "./dict/pl.standard.bincode";
     let pl_pl = Standard::from_path(Language::Polish, path_to_dict).unwrap();

@@ -1,12 +1,17 @@
 //! Product packet
 //!
 //! Extended PLU packet (I#00)
+//! 
+//! Only the following fields are used:
 //!
 //! Offset  Length(bytes)   Description
 //! 7       18              ean
 //! 25      5               position
 //! 30      40              name
 //! 70      10              price
+//! 80      1               ptu (tax identifier)
+//! 110     20              quantity
+//!
 
 use std::fmt::Display;
 use std::fs::File;
@@ -355,18 +360,6 @@ pub struct ProductFile {
 
 pub struct RawProductFile {
     reader: BufReader<File>,
-}
-
-// FIXME - I don't remember exacly why I have ProcuctFile and
-// RawProductFile ...
-impl ProductFile {
-    //FIXME: fname -> PathBuf
-    pub fn new(fname: String) -> std::io::Result<ProductFile> {
-        let file = File::open(fname)?;
-        Ok(ProductFile {
-            reader: BufReader::<File>::new(file),
-        })
-    }
 }
 
 impl RawProductFile {

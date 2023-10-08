@@ -1,7 +1,6 @@
 //#![allow(unused)]
-//! Start packet
-//! This is a start packet documentation which is not present in render
-
+//! This module implements extended start packet.
+//!
 use std::fmt::Debug;
 
 use crate::net::error::{ProtocolError, Result};

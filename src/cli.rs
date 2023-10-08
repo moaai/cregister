@@ -1,3 +1,6 @@
+//! Command line support for cregister
+//!
+
 use clap::{ColorChoice, Parser, Subcommand};
 use std::net::Ipv4Addr;
 use std::path::PathBuf;
@@ -24,7 +27,7 @@ pub enum Commands {
         #[arg(short, long, help = "Send file content")]
         file: PathBuf,
     },
-    #[clap(subcommand)]
+    #[clap(subcommand, about="Get data from the device")]
     Get(ListSubCommand),
 }
 
@@ -32,9 +35,9 @@ pub enum Commands {
 pub enum ListSubCommand {
     #[command(about = "List cash register products")]
     Products {
-        #[arg(short, long, help = "Start date")]
+        #[arg(short, long, help = "Start date/Range start")]
         start: Option<String>,
-        #[arg(short, long, help = "End date")]
+        #[arg(short, long, help = "End date/Range end")]
         end: Option<String>,
         #[arg(short, long, help = "Send products from file", default_value = "products.csv")]
         file: PathBuf,

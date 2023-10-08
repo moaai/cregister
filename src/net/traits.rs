@@ -6,9 +6,6 @@ use super::packet::{PacketType, PacketTag};
 use crate::net::error::{ProtocolError, Result};
 use crate::tools::calc_crc;
 
-// use crate::private::{self, Sealed};
-
-// FIXME - That should go to packet ...
 pub(crate) trait Packet: Validate {
     type Output;
 

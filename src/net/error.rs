@@ -1,3 +1,5 @@
+//! Custom error definition.
+
 use super::codes::Codes;
 
 pub type Result<T> = std::result::Result<T, ProtocolError>;
@@ -33,22 +35,6 @@ impl std::fmt::Display for ProtocolError {
 
 impl std::fmt::Debug for ProtocolError {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        // writeln!(f, "---- Error Debug ---");
-        // match *self {
-        //     ProtocolError::CommunicationError(ref err) => {
-        //         writeln!(f, "{}", err)
-        //     },
-        //     _ => {
-        //         writeln!(f, "FU FU {}", self)
-        //     }
-        // }
-
-        // let mut builder = f.debug_struct("Protocol BAD");
-
-        // builder.field("what", &"the fuck");
-
-        // builder.finish()
-
         if let ProtocolError::PacketError { cur, exp } = self {
             let mut builder = f.debug_struct(&format!("{}", self));
 
@@ -64,7 +50,6 @@ impl std::fmt::Debug for ProtocolError {
 
 impl From<std::io::Error> for ProtocolError {
     fn from(e: std::io::Error) -> Self {
-        // eprintln!("{:?} {:?} {:?}", e.source(), e.kind(), e.raw_os_error());
         Self::IoError(e)
     }
 }

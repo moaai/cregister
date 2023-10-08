@@ -1,3 +1,22 @@
+//! Extended packet header
+//!
+//! In the specification, the header is not defined as a separate unit.
+//! To Reduce code duplication, the first 7 first bytes were extracted from the packet
+//! and implemented as common header.
+//!
+//! Every extended packet starts at offset 8.
+//! Regular headers are not supported.
+//!
+//! Offset  Length  Description
+//! 0       1       code (start packet code STX)
+//! 1       1       packet tag (for example 'S' is a start packet)
+//! 3       1       packet type (for example for extended product 'I')
+//! 3       3       packet sub-type (for example #00 for extended product)
+//! 6       1       dir,    0 - download from device
+//!                         1 - upload to device
+//!                         2 - report download (not supported)
+//!
+
 use std::convert::TryInto;
 
 use crate::net::codes::Codes;
@@ -26,13 +45,6 @@ pub struct Header {
 impl Header {
     pub(crate) fn new() -> Self {
         Default::default()
-    }
-
-    pub(crate) fn get_size(&self) -> usize {
-        match self.stpe {
-            Some(_) => 7,
-            None => 4
-        }
     }
 
     pub(crate) fn from_bytes(buf: &[u8]) -> Result<Self> {

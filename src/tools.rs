@@ -23,56 +23,6 @@ pub unsafe fn struct_to_u8<T>(p: &T) -> &[u8] {
     std::slice::from_raw_parts((p as *const T) as *const u8, std::mem::size_of::<T>())
 }
 
-use std::fmt::Result;
-use std::fmt::Write;
-
-pub fn ll_bump<F>(buf: &[u8], op: F) -> Result
-where
-    F: Fn(&str),
-{
-    let mut s = String::new();
-
-    if buf.len() < 6 {
-        return Ok(());
-    }
-
-    writeln!(&mut s)?;
-
-    //TODO: Detect extendect packets, starting with '#'
-    let st = String::from_iter(
-        &buf[3..6]
-            .iter()
-            // .map(|x| *x) // :)
-            .copied()
-            .map(|x| x as char)
-            .collect::<Vec<char>>(),
-    );
-
-    writeln!(
-        &mut s,
-        "Packet: {:?} tpe: {} stpe: {}  dir: {} size: {} crc: {:?}",
-        buf[1] as char,
-        buf[2] as char,
-        st,
-        buf[6] as char,
-        buf.len(),
-        &buf[buf.len() - 4..]
-    )?;
-
-    write!(&mut s, "\t   ")?;
-    for i in 0..COLUMNS {
-        write!(&mut s, "{: >3} ", i)?;
-    }
-    writeln!(&mut s)?;
-    for (i, chunk) in buf[..buf.len()].chunks(COLUMNS).enumerate() {
-        writeln!(&mut s, "\t{: >2} {:2?}", i, chunk)?
-    }
-
-    op(&s);
-
-    Ok(())
-}
-
 pub fn ll_dump<F>(buf: &[u8], op: F)
 where
     F: Fn(),

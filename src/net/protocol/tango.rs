@@ -150,22 +150,6 @@ impl Tango {
                     )));
                 }
 
-                // println!("{:?} {:?}", &buf[0], &buf[size - 5]);
-                // Here we should validate a frame not packet
-                // STX ... ETX
-                // CRC
-
-                // let header = Header::deserialize(&buf)?;
-                // Header::validate(&buf)?;
-                //Validate buffer
-                // T::validate(&buf[..size])?;
-
-                // frame.validate_crc(&buf[..size])?;
-
-                //let pckt = <T as crate::net::traits::Deserialize>::deserialize(&buf[..size]);
-
-                let h_size = header.get_size();
-
                 let pckt = T::from_bytes(&buf[..size])?;
 
                 let rs = ReadState {

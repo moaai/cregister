@@ -8,11 +8,11 @@ pub struct Status;
 impl Packet for Status {
     type Output = Status;
     const P_SIZE: usize = 144;
-    fn to_bytes(&self, buf: &mut impl std::io::Write) -> Result<usize> {
+    fn to_bytes(&self, _buf: &mut impl std::io::Write) -> Result<usize> {
         Ok(0)
     }
 
-    fn from_bytes(buf: &[u8]) -> Result<Status> {
+    fn from_bytes(_buf: &[u8]) -> Result<Status> {
         Ok(Status)
     }
     fn get_type() -> PacketType {
@@ -24,7 +24,7 @@ impl Packet for Status {
 }
 
 impl Validate for Status {
-    fn validate(buf: &[u8]) -> Result<()> {
+    fn validate(_buf: &[u8]) -> Result<()> {
         Ok(())
     }
 }

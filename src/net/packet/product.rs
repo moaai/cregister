@@ -1,7 +1,7 @@
 //! Product packet
 //!
 //! Extended PLU packet (I#00)
-//! 
+//!
 //! Only the following fields are used:
 //!
 //! Offset  Length(bytes)   Description
@@ -154,40 +154,40 @@ impl Packet for Product {
         let position: [u8; 5] = buf[25..25 + 5].try_into()?;
         let position = Product::get_numeric::<u32>(&position);
 
-        let name: [u8; 40] = buf[30..30 + 40].try_into().unwrap();
+        let name: [u8; 40] = buf[30..30 + 40].try_into()?;
         let name = Product::build_name(&name);
 
         // name: &'a[u8],
-        let price: [u8; 10] = buf[70..70 + 10].try_into().unwrap();
+        let price: [u8; 10] = buf[70..70 + 10].try_into()?;
         let price: f32 = Product::get_numeric::<f32>(&price) / 100.0;
 
         let ptu = buf[80] as char;
         let precission = buf[81];
 
-        let flags: [u8; 4] = buf[82..82 + 4].try_into().unwrap();
-        let flags = String::from(std::str::from_utf8(&flags).unwrap());
+        let flags: [u8; 4] = buf[82..82 + 4].try_into()?;
+        let flags = String::from(std::str::from_utf8(&flags)?);
 
-        let section: [u8; 2] = buf[86..86 + 2].try_into().unwrap();
+        let section: [u8; 2] = buf[86..86 + 2].try_into()?;
         let section = Product::get_numeric::<u8>(&section);
 
-        let halo: [u8; 2] = buf[88..88 + 2].try_into().unwrap();
+        let halo: [u8; 2] = buf[88..88 + 2].try_into()?;
         let halo = Product::get_numeric::<u8>(&halo);
 
-        let tandem: [u8; 18] = buf[90..90 + 18].try_into().unwrap();
-        let tandem = String::from(std::str::from_utf8(&tandem).unwrap());
+        let tandem: [u8; 18] = buf[90..90 + 18].try_into()?;
+        let tandem = String::from(std::str::from_utf8(&tandem)?);
 
-        let unit: [u8; 2] = buf[108..108 + 2].try_into().unwrap();
+        let unit: [u8; 2] = buf[108..108 + 2].try_into()?;
         let unit = Product::get_numeric::<u8>(&unit);
 
-        let quantity: [u8; 20] = buf[110..110 + 20].try_into().unwrap();
-        let quantity = String::from(std::str::from_utf8(&quantity).unwrap()).replace(' ', "");
+        let quantity: [u8; 20] = buf[110..110 + 20].try_into()?;
+        let quantity = String::from(std::str::from_utf8(&quantity)?).replace(' ', "");
         let quantity = quantity.parse::<i16>().unwrap();
 
         // let quantity: [u8; 20] = buf[110..110 + 20].try_into().unwrap();
         // let quantity = Product::get_numeric::<u16>(&quantity);
         // println!("{:?}", quantity);
 
-        let key_code: [u8; 3] = buf[130..130 + 3].try_into().unwrap(); // FIXME - 0 * 100 + 1 * 10 + 2
+        let key_code: [u8; 3] = buf[130..130 + 3].try_into()?; // FIXME - 0 * 100 + 1 * 10 + 2
         let key_code = Product::get_numeric::<u16>(&key_code);
 
         Ok(Self {

@@ -13,6 +13,7 @@ pub enum ProtocolError {
     IoError(std::io::Error),
     PacketError { cur: Codes, exp: Codes },
     DeserializeError(std::array::TryFromSliceError),
+    Utf8Error(std::str::Utf8Error),
 }
 
 impl ProtocolError {
@@ -29,6 +30,7 @@ impl std::fmt::Display for ProtocolError {
             ProtocolError::IoError(ref err) => write!(f, "IO error: {}", err),
             ProtocolError::PacketError { cur: _, exp: _ } => f.write_str("Packet error"),
             ProtocolError::DeserializeError(err) => write!(f, "Deserialize error {}", err),
+            ProtocolError::Utf8Error(err) => write!(f, "Convertion failes {}", err),
         }
     }
 }
@@ -59,3 +61,11 @@ impl From<std::array::TryFromSliceError> for ProtocolError {
         Self::DeserializeError(e)
     }
 }
+
+impl From<std::str::Utf8Error> for ProtocolError {
+    fn from(e: std::str::Utf8Error) -> Self {
+        Self::Utf8Error(e)
+    }
+}
+
+impl std::error::Error for ProtocolError {}
